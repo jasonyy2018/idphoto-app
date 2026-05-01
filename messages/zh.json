@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "home": "首页",
+    "pricing": "价格",
+    "apiDocs": "API 文档",
+    "startFree": "开始使用"
+  },
+  "home": {
+    "badge": "AI 驱动 · gpt-image-2 · 2025",
+    "title": "专业 AI 证件照生成",
+    "subtitle": "秒级生成护照、高考、签证等各类证件照，专业级品质，一键打印排版。",
+    "uploadBtn": "上传照片",
+    "apiDocsBtn": "查看 API 文档",
+    "formatsTitle": "支持规格",
+    "formatsCount": "4 种规格"
+  },
+  "upload": {
+    "chooseFormat": "选择证件类型",
+    "chooseFormatSub": "选择你需要的证件照类型",
+    "dropTitle": "拖拽照片至此",
+    "dropSub": "或点击选择文件",
+    "dropFormats": "JPG · PNG · WEBP · 最大 10MB",
+    "browseBtn": "选择文件",
+    "privacy": "隐私保护",
+    "speed": "约 10 秒处理",
+    "pdf": "可打印 PDF",
+    "steps": {
+      "select": "选择 & 上传",
+      "processing": "AI 处理中",
+      "download": "下载"
+    }
+  },
+  "result": {
+    "complete": "生成完成",
+    "preview": "预览",
+    "downloadOptions": "下载选项",
+    "downloadSub": "照片已生成，请选择下载格式。",
+    "singlePhoto": "单张照片",
+    "singlePhotoSub": "原始分辨率 · JPEG 95%",
+    "download": "下载",
+    "printLayout": "打印排版 PDF",
+    "printLayoutSub": "4×1寸 或 4×2寸 · A4 打印",
+    "exportPdf": "导出 PDF",
+    "printPreview": "排版预览",
+    "generateAnother": "重新生成"
+  },
+  "admin": {
+    "title": "管理后台",
+    "dashboard": "数据概览",
+    "apiKeys": "密钥管理",
+    "orders": "订单记录",
+    "settings": "系统设置",
+    "totalOrders": "总订单",
+    "activeKeys": "活跃密钥",
+    "avgTime": "平均时长",
+    "successRate": "成功率",
+    "newKey": "+ 新建密钥",
+    "recentOrders": "最新订单"
+  },
+  "templates": {
+    "passport": "中国护照",
+    "gaokao": "高考报名",
+    "visa": "美国签证",
+    "study_abroad": "英国留学"
+  }
+}

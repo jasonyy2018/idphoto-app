@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "home": "Home",
+    "pricing": "Pricing",
+    "apiDocs": "API Docs",
+    "startFree": "Start Free"
+  },
+  "home": {
+    "badge": "AI-Powered · gpt-image-2 · 2025",
+    "title": "Professional AI ID Photos",
+    "subtitle": "Generate studio-quality ID photos for passport, college entrance exams, visa & more in seconds.",
+    "uploadBtn": "Upload Photo",
+    "apiDocsBtn": "View API Docs",
+    "formatsTitle": "Supported Formats",
+    "formatsCount": "4 formats"
+  },
+  "upload": {
+    "chooseFormat": "Choose Format",
+    "chooseFormatSub": "Select the ID photo type you need",
+    "dropTitle": "Drop your photo here",
+    "dropSub": "or click to browse files",
+    "dropFormats": "JPG · PNG · WEBP · Max 10MB",
+    "browseBtn": "Browse Files",
+    "privacy": "Privacy Protected",
+    "speed": "~10s Processing",
+    "pdf": "Print-Ready PDF",
+    "steps": {
+      "select": "Select & Upload",
+      "processing": "Processing",
+      "download": "Download"
+    }
+  },
+  "result": {
+    "complete": "Generation Complete",
+    "preview": "Preview",
+    "downloadOptions": "Download Options",
+    "downloadSub": "Your photo is ready! Choose a format to download.",
+    "singlePhoto": "Single Photo",
+    "singlePhotoSub": "Full resolution · JPEG 95%",
+    "download": "Download",
+    "printLayout": "Print Layout PDF",
+    "printLayoutSub": "4×1-inch or 4×2-inch · A4 ready",
+    "exportPdf": "Export PDF",
+    "printPreview": "Print Layout Preview",
+    "generateAnother": "Generate Another"
+  },
+  "admin": {
+    "title": "Admin",
+    "dashboard": "Dashboard",
+    "apiKeys": "API Keys",
+    "orders": "Orders",
+    "settings": "Settings",
+    "totalOrders": "Total Orders",
+    "activeKeys": "Active API Keys",
+    "avgTime": "Avg. Process Time",
+    "successRate": "Success Rate",
+    "newKey": "+ New Key",
+    "recentOrders": "Recent Orders"
+  },
+  "templates": {
+    "passport": "Chinese Passport",
+    "gaokao": "College Entrance Exam",
+    "visa": "US Visa",
+    "study_abroad": "UK Study Visa"
+  }
+}
