@@ -8,10 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "dotenv-cli -e .env -- drizzle-kit migrate",
-    "db:push": "dotenv-cli -e .env -- drizzle-kit push",
-    "db:seed": "dotenv-cli -e .env -- tsx scripts/seed.ts",
-    "db:studio": "dotenv-cli -e .env -- drizzle-kit studio"
+    "db:migrate": "dotenv -e .env -- drizzle-kit migrate",
+    "db:push": "dotenv -e .env -- drizzle-kit push",
+    "db:seed": "dotenv -e .env -- tsx scripts/seed.ts",
+    "db:studio": "dotenv -e .env -- drizzle-kit studio"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",

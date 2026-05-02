@@ -1,5 +1,5 @@
 import sharp from 'sharp';
-import OpenAI from 'openai';
+import OpenAI, { toFile } from 'openai';
 import { buildPhotoPrompt } from './prompt-builder';
 import { saveResult } from './storage';
 import type { SpecTemplate } from './db/schema';
@@ -8,6 +8,11 @@ import type { SpecTemplate } from './db/schema';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+  ...(process.env.OPENAI_BASE_URL && { baseURL: process.env.OPENAI_BASE_URL }),
+  defaultHeaders: {
+    ...(process.env.NEXT_PUBLIC_APP_URL && { 'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL }),
+    'X-OpenRouter-Title': 'PhotoID AI',
+  }
 });
 
 // ─── Pixel Calculator ─────────────────────────────────────────────────────────
@@ -42,20 +47,79 @@ export async function processIdPhoto(
 ): Promise<ProcessResult> {
   const startTime = Date.now();
   const prompt = buildPhotoPrompt(template);
+  // ── Step 1: Compress image before sending as JSON to avoid WAF limits ──
+  // Doubao 2K requires higher resolution, so we compress to max 2048x2048
+  const compressedBuffer = await sharp(originalBuffer)
+    .resize(2048, 2048, { fit: 'inside', withoutEnlargement: true })
+    .jpeg({ quality: 85 })
+    .toBuffer();
 
-  // ── Step 1: Call OpenAI gpt-image-2 ─────────────────────────────────────
-  const imageFile = await toOpenAIFile(originalBuffer, 'original.jpg');
+  const base64Image = compressedBuffer.toString('base64');
+  const dataUrl = `data:image/jpeg;base64,${base64Image}`;
+  const modelName = process.env.OPENAI_MODEL || 'openai/gpt-5.4-image-2';
+  let b64 = '';
 
-  const response = await openai.images.edit({
-    model: 'gpt-image-2',
-    image: imageFile,
-    prompt,
-    size: '1024x1024',
-  });
+  if (modelName.includes('doubao')) {
+    // ── Call Volcengine Doubao via images.generate ───────────────
+    const response = await openai.images.generate({
+      model: modelName,
+      prompt: prompt,
+      n: 1,
+      size: '2K' as any, // Doubao specifically uses strings like '2K'
+      response_format: 'b64_json',
+      // @ts-ignore - Volcengine specific extensions
+      extra_body: {
+        image: base64Image, // passing base64 directly as expected by many image-to-image endpoints
+        watermark: false
+      }
+    });
 
-  const b64 = response.data?.[0]?.b64_json;
-  if (!b64) {
-    throw new Error('OpenAI returned no image data');
+    if (!response.data?.[0]?.b64_json) {
+      throw new Error('Doubao API returned no image data');
+    }
+    b64 = response.data[0].b64_json;
+
+  } else if (modelName === 'gpt-image-2') {
+    // ── Call OneAPI / gpt-image-2 via images.edit ───────────────
+    const imageFile = await toFile(compressedBuffer, 'image.jpg', { type: 'image/jpeg' });
+    
+    const response = await openai.images.edit({
+      model: modelName,
+      prompt: prompt,
+      image: imageFile,
+      n: 1,
+      response_format: 'b64_json'
+    });
+
+    if (!response.data?.[0]?.b64_json) {
+      throw new Error(`${modelName} API returned no image data`);
+    }
+    b64 = response.data[0].b64_json;
+
+  } else {
+    // ── Call OpenRouter via Chat Completions ─────────────────────
+    const apiResponse = await openai.chat.completions.create({
+      model: modelName,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: prompt },
+            { type: 'image_url', image_url: { url: dataUrl } }
+          ]
+        }
+      ],
+      // @ts-ignore - OpenRouter specific extension
+      modalities: ['image', 'text']
+    });
+
+    const message = apiResponse.choices[0]?.message as any;
+    if (message?.images && message.images.length > 0) {
+      const imageUrl = message.images[0].image_url.url;
+      b64 = imageUrl.includes(',') ? imageUrl.split(',')[1] : imageUrl;
+    } else {
+      throw new Error('OpenRouter API returned no image data in message.images');
+    }
   }
 
   // ── Step 2: Decode base64 ─────────────────────────────────────────────
@@ -84,17 +148,6 @@ export async function processIdPhoto(
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-/**
- * Convert a Buffer to an OpenAI-compatible File object for the images.edit API.
- */
-async function toOpenAIFile(buffer: Buffer, filename: string): Promise<File> {
-  const arrayBuffer = buffer.buffer.slice(
-    buffer.byteOffset,
-    buffer.byteOffset + buffer.byteLength
-  ) as ArrayBuffer;
-  return new File([arrayBuffer], filename, { type: 'image/jpeg' });
-}
 
 // ─── Validation ───────────────────────────────────────────────────────────────
 

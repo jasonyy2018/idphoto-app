@@ -150,11 +150,14 @@ export function ResultClient({ order, template }: { order: PhotoOrder, template:
             <h4 className="text-sm font-bold text-foreground/70">{t('printPreview')}</h4>
             <div className="w-full aspect-[1/1.414] bg-background border border-border/50 rounded-lg p-6 relative flex flex-col items-center justify-center" ref={layoutRef}>
                <span className="absolute top-2 right-4 text-[10px] text-foreground/30 font-mono">A4 Paper</span>
-               <div className="grid grid-cols-2 gap-4 opacity-50">
-                  <div className="bg-panel rounded-sm border border-border w-16 aspect-[3/4]"></div>
-                  <div className="bg-panel rounded-sm border border-border w-16 aspect-[3/4]"></div>
-                  <div className="bg-panel rounded-sm border border-border w-16 aspect-[3/4]"></div>
-                  <div className="bg-panel rounded-sm border border-border w-16 aspect-[3/4]"></div>
+               <div className="grid grid-cols-2 gap-4 shadow-sm">
+                 {[...Array(4)].map((_, i) => (
+                   <div key={i} className="relative bg-panel rounded-sm border border-border/50 w-16 overflow-hidden shadow-sm" style={{ aspectRatio: `${template.widthMm}/${template.heightMm}` }}>
+                     {order.resultImagePath && (
+                       <Image src={order.resultImagePath} alt={`Preview ${i}`} fill className="object-cover" unoptimized />
+                     )}
+                   </div>
+                 ))}
                </div>
             </div>
           </div>

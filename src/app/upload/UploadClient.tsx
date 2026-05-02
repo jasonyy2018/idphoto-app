@@ -13,12 +13,19 @@ export function UploadClient({ templates, locale }: { templates: SpecTemplate[],
   const [selectedId, setSelectedId] = useState<number>(templates[0]?.id || 0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [previewData, setPreviewData] = useState<{ file: File; base64: string } | null>(null);
 
-  const handleFileSelect = async (file: File, base64: string) => {
+  const handleFileSelect = (file: File, base64: string) => {
+    setPreviewData({ file, base64 });
+    setError(null);
+  };
+
+  const handleConfirm = async () => {
+    if (!previewData) return;
     setIsProcessing(true);
     setError(null);
     
-    const result = await submitPhoto(selectedId, base64);
+    const result = await submitPhoto(selectedId, previewData.base64);
     
     if (result.success && result.data) {
       router.push(`/result/${result.data.orderId}`);
@@ -91,9 +98,43 @@ export function UploadClient({ templates, locale }: { templates: SpecTemplate[],
           </div>
         </div>
 
-        {/* Right: Dropzone */}
+        {/* Right: Dropzone or Preview */}
         <div className="flex flex-col gap-4">
-          <PhotoUploader onFileSelect={handleFileSelect} disabled={isProcessing} />
+          {!previewData ? (
+            <PhotoUploader onFileSelect={handleFileSelect} disabled={isProcessing} />
+          ) : (
+            <div className="w-full flex flex-col items-center gap-6 p-6 rounded-2xl border border-border bg-panel min-h-[400px] justify-center relative">
+              {isProcessing && (
+                <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center z-10">
+                  <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+                  <p className="text-foreground font-medium animate-pulse">{t('steps.processing')}...</p>
+                </div>
+              )}
+              
+              <div className="relative w-48 h-64 rounded-xl overflow-hidden shadow-lg border-4 border-background">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={previewData.base64} alt="Preview" className="w-full h-full object-cover" />
+              </div>
+              
+              <div className="flex items-center gap-4 w-full">
+                <button 
+                  onClick={() => setPreviewData(null)}
+                  disabled={isProcessing}
+                  className="flex-1 py-3 px-6 rounded-xl border border-border bg-background hover:bg-panel transition-colors text-foreground font-medium"
+                >
+                  {locale === 'zh' ? '重新选择' : 'Reselect'}
+                </button>
+                <button 
+                  onClick={handleConfirm}
+                  disabled={isProcessing}
+                  className="flex-2 py-3 px-6 rounded-xl bg-primary hover:bg-primary-hover text-white transition-colors font-medium shadow-lg shadow-primary/25 flex items-center justify-center gap-2"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+                  {locale === 'zh' ? '确认生成' : 'Generate Now'}
+                </button>
+              </div>
+            </div>
+          )}
           
           {error && (
              <div className="p-4 rounded-xl bg-error/10 border border-error/20 text-error text-sm">

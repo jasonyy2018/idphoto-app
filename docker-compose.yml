@@ -27,6 +27,8 @@ services:
       POSTGRES_USER: idphoto
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: idphoto
+    ports:
+      - "5433:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:

@@ -70,42 +70,38 @@ export function buildPhotoPrompt(template: SpecTemplate): string {
     .map((r, i) => `${i + 1}. ${r}`)
     .join('\n');
 
-  return `You are a professional ID photo studio photographer with 20 years of experience producing government-compliant identity photographs.
+  return `You are a professional ID photo studio photographer.
 
-TASK: Edit the provided portrait photo to meet the following official ID photo specifications exactly.
+【核心指令 / CORE TASK】
+以图中人物为绝对核心，制作一张高品质的标准证件照。
+必须 100% 保留原图中人物的五官、脸型、发型特征和真实长相，严禁发生“换脸”或修改人物原本的身份特征！
+在此人物基础上，仅对背景、光影和服装姿态进行证件照规范化处理。
 
-== BACKGROUND ==
-Replace the entire background with a perfectly uniform, solid color: RGB(${r}, ${g}, ${b}). 
-There must be zero gradient, zero shadow, zero texture on the background. It must be a completely flat, solid color.
+【背景要求 / BACKGROUND】
+必须将背景完全替换为纯色 RGB(${r}, ${g}, ${b})。
+绝对纯色，不能有任何渐变、阴影或杂纹。
 
-== SUBJECT FRAMING ==
+【构图排版 / SUBJECT FRAMING】
 ${headRatioNote}
-The subject must be centered horizontally. Crop the image so the top of the head is near the top edge with approximately 5-10% margin.
+人物必须水平居中，头顶距离图片边缘保留 5-10% 的空白。
 
-== EXPRESSION ==
-${rules.expression}. The expression must look natural, not forced or artificial.
+【表情与妆容 / EXPRESSION & MAKEUP】
+${rules.expression}。表情自然不僵硬。
+${rules.makeup}。
 
-== MAKEUP & APPEARANCE ==
-${rules.makeup}.
+【眼镜与配饰 / EYEWEAR & ACCESSORIES】
+${rules.glasses}。
 
-== EYEWEAR ==
-${rules.glasses}.
+【服装要求 / CLOTHING】
+换上适合正式证件照的正装或带领衬衫（如西装、白衬衫）。衣服颜色必须与背景色 RGB(${r}, ${g}, ${b}) 有明显区分。
 
-== CLOTHING ==
-The subject should wear formal or semi-formal attire appropriate for an official document. Avoid casual wear, sportswear, or clothing with large logos. 
-Clothing color should contrast clearly with the background.
-
-== STRICT PROHIBITIONS ==
+【严格禁止 / STRICT PROHIBITIONS】
 ${specialRulesText}
-- No hats, caps, or head accessories (unless religious)
-- No jewelry that obscures the face
-- No motion blur
-- No image artifacts, noise, or compression artifacts
-- No AI-generated facial distortion
+- 禁止佩戴帽子或头饰（宗教原因除外）
+- 禁止任何遮挡面部的首饰
+- 禁止面部出现 AI 扭曲、变形或过度美颜
+- 禁止画面带有模糊或噪点
 
-== TECHNICAL QUALITY ==
-photorealistic, sharp focus, professional studio lighting, even illumination with no harsh shadows on the face, 
-no blown-out highlights, natural skin tone, crisp edges between subject and background.
-
-Output a high-quality, print-ready ID photograph that would be accepted by official government or institutional authorities.`.trim();
+【画质要求 / TECHNICAL QUALITY】
+商业级唯美摄影质感，棚拍柔光照明（无面部硬阴影），肤色自然，人物边缘与背景抠图融合过渡自然，毛发细节清晰，超高分辨率商业级海报画质。`.trim();
 }

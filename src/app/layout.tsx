@@ -33,7 +33,10 @@ export default async function RootLayout({
       lang={locale}
       className={`${inter.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+      <body 
+        className="min-h-full flex flex-col bg-background text-foreground"
+        suppressHydrationWarning
+      >
         <NextIntlClientProvider messages={messages}>
           <Navbar />
           <main className="flex-1 flex flex-col">
