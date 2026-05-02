@@ -14,9 +14,26 @@ services:
       # Persistent upload storage — survives container restarts
       - /opt/idphoto-app/data/uploads:/app/public/uploads
     depends_on:
+      migrator:
+        condition: service_completed_successfully
       db:
         condition: service_healthy
     restart: unless-stopped
+    networks:
+      - idphoto-net
+
+  migrator:
+    build:
+      context: .
+      target: builder
+    container_name: idphoto-migrator
+    environment:
+      - DATABASE_URL=postgresql://idphoto:secret@db:5432/idphoto
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "pnpm db:push && pnpm db:seed"
     networks:
       - idphoto-net
 
