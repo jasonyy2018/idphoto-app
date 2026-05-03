@@ -93,8 +93,8 @@ export function ResultClient({ order, template }: { order: PhotoOrder, template:
         {/* Left: Preview */}
         <div className="flex flex-col gap-4 items-center">
           <p className="text-foreground/50 text-sm font-mono">{t('preview')}</p>
-          <div className="p-4 rounded-2xl bg-panel border border-border flex flex-col items-center shadow-lg">
-            <div className="relative rounded-lg overflow-hidden border border-border/50 shadow-inner" style={{ width: template.widthMm * 5, height: template.heightMm * 5 }}>
+          <div className="p-4 rounded-2xl bg-panel border border-border flex flex-col items-center shadow-lg w-full max-w-[320px]">
+            <div className="relative rounded-lg overflow-hidden border border-border/50 shadow-inner w-full" style={{ maxWidth: template.widthMm * 5, aspectRatio: template.widthMm / template.heightMm }}>
               {order.resultImagePath && (
                 <Image src={order.resultImagePath} alt="ID Photo" fill className="object-cover" unoptimized />
               )}
@@ -151,13 +151,17 @@ export function ResultClient({ order, template }: { order: PhotoOrder, template:
             <div className="w-full aspect-[1/1.414] bg-background border border-border/50 rounded-lg p-6 relative flex flex-col items-center justify-center" ref={layoutRef}>
                <span className="absolute top-2 right-4 text-[10px] text-foreground/30 font-mono">A4 Paper</span>
                <div className="grid grid-cols-2 gap-4 shadow-sm">
-                 {[...Array(4)].map((_, i) => (
-                   <div key={i} className="relative bg-panel rounded-sm border border-border/50 w-16 overflow-hidden shadow-sm" style={{ aspectRatio: `${template.widthMm}/${template.heightMm}` }}>
-                     {order.resultImagePath && (
-                       <Image src={order.resultImagePath} alt={`Preview ${i}`} fill className="object-cover" unoptimized />
-                     )}
-                   </div>
-                 ))}
+                 {[...Array(4)].map((_, i) => {
+                   const previewWidth = 64;
+                   const previewHeight = Math.round(previewWidth * (template.heightMm / template.widthMm));
+                   return (
+                     <div key={i} className="relative bg-panel rounded-sm border border-border/50 overflow-hidden shadow-sm" style={{ width: previewWidth, height: previewHeight }}>
+                       {order.resultImagePath && (
+                         <Image src={order.resultImagePath} alt={`Preview ${i}`} fill className="object-cover" unoptimized />
+                       )}
+                     </div>
+                   );
+                 })}
                </div>
             </div>
           </div>

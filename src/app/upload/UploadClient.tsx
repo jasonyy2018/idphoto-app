@@ -111,10 +111,20 @@ export function UploadClient({ templates, locale }: { templates: SpecTemplate[],
                 </div>
               )}
               
-              <div className="relative w-48 h-64 rounded-xl overflow-hidden shadow-lg border-4 border-background">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={previewData.base64} alt="Preview" className="w-full h-full object-cover" />
-              </div>
+              {(() => {
+                const selectedTemplate = templates.find(t => t.id === selectedId) || templates[0];
+                const heightPx = 256; // Fixed max height
+                const widthPx = Math.round(heightPx * (selectedTemplate.widthMm / selectedTemplate.heightMm));
+                return (
+                  <div 
+                    className="relative rounded-xl overflow-hidden shadow-lg border-4 border-background transition-all"
+                    style={{ width: widthPx, height: heightPx }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={previewData.base64} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                );
+              })()}
               
               <div className="flex items-center gap-4 w-full">
                 <button 
