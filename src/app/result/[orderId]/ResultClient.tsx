@@ -92,12 +92,25 @@ export function ResultClient({ order, template }: { order: PhotoOrder, template:
         {/* Left: Preview */}
         <div className="flex flex-col gap-4 items-center">
           <p className="text-foreground/50 text-sm font-mono">{t('preview')}</p>
-          <div className="p-4 rounded-2xl bg-panel border border-border flex flex-col items-center shadow-lg w-full max-w-[320px]">
-            <div className="relative rounded-lg overflow-hidden border border-border/50 shadow-inner w-full" style={{ maxWidth: template.widthMm * 5, aspectRatio: template.widthMm / template.heightMm }}>
-              {order.resultImagePath && (
-                <Image src={order.resultImagePath} alt="ID Photo" fill className="object-cover" unoptimized />
-              )}
-            </div>
+          <div className="p-4 rounded-2xl bg-panel border border-border flex flex-col items-center shadow-lg">
+            {order.resultImagePath ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={order.resultImagePath}
+                alt="ID Photo"
+                className="rounded-lg border border-border/50 shadow-inner object-cover block"
+                style={{
+                  width: Math.min(template.widthMm * 4, 280),
+                  height: Math.min(template.heightMm * 4, 280 * template.heightMm / template.widthMm),
+                }}
+              />
+            ) : (
+              <div className="rounded-lg border border-border/50 shadow-inner bg-background/50 flex items-center justify-center text-foreground/30 text-sm"
+                style={{ width: Math.min(template.widthMm * 4, 280), height: Math.min(template.heightMm * 4, 280 * template.heightMm / template.widthMm) }}
+              >
+                No image
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-4 text-xs font-mono text-foreground/50 mt-2 px-4 py-2 rounded-lg bg-panel border border-border/50">
             <span>{template.widthMm}×{template.heightMm}mm</span>
@@ -149,14 +162,17 @@ export function ResultClient({ order, template }: { order: PhotoOrder, template:
             <h4 className="text-sm font-bold text-foreground/70">{t('printPreview')}</h4>
             <div className="w-full aspect-[1/1.414] bg-background border border-border/50 rounded-lg p-6 relative flex flex-col items-center justify-center" ref={layoutRef}>
                <span className="absolute top-2 right-4 text-[10px] text-foreground/30 font-mono">A4 Paper</span>
-               <div className="grid grid-cols-2 gap-4 shadow-sm">
+               <div className="grid grid-cols-2 gap-4">
                  {[...Array(4)].map((_, i) => {
-                   const previewWidth = 64;
+                   const previewWidth = 72;
                    const previewHeight = Math.round(previewWidth * (template.heightMm / template.widthMm));
                    return (
-                     <div key={i} className="relative bg-panel rounded-sm border border-border/50 overflow-hidden shadow-sm" style={{ width: previewWidth, height: previewHeight }}>
-                       {order.resultImagePath && (
-                         <Image src={order.resultImagePath} alt={`Preview ${i}`} fill className="object-cover" unoptimized />
+                     <div key={i} className="rounded-sm border border-border/50 overflow-hidden shadow-sm" style={{ width: previewWidth, height: previewHeight }}>
+                       {order.resultImagePath ? (
+                         /* eslint-disable-next-line @next/next/no-img-element */
+                         <img src={order.resultImagePath} alt={`Preview ${i}`} className="w-full h-full object-cover block" />
+                       ) : (
+                         <div className="w-full h-full bg-panel" />
                        )}
                      </div>
                    );

@@ -9,6 +9,7 @@ import type { SpecTemplate } from './db/schema';
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   ...(process.env.OPENAI_BASE_URL && { baseURL: process.env.OPENAI_BASE_URL }),
+  timeout: 120_000, // 2 minutes - fail fast if API is unreachable
   defaultHeaders: {
     ...(process.env.NEXT_PUBLIC_APP_URL && { 'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL }),
     'X-OpenRouter-Title': 'PhotoID AI',
